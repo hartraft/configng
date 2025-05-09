@@ -79,21 +79,25 @@ def generate_anchor_links(item, level=0, parent_path=""):
 
 def insert_images_and_header(item):
     parts = []
+    item_id = item['id']
     for ext in ('png', 'webp'):
-        image_file = Path(__file__).parent / 'include' / 'images' / f"{item['id']}.{ext}"
+        image_file = Path(__file__).parent / 'include' / 'images' / f"{item_id}.{ext}"
         if image_file.is_file():
-            rel_path = f"tools/include/images/{item['id']}.{ext}"
+            rel_path = f"tools/include/images/{item_id}.{ext}"
             parts.append(f"\n<!--- section image START from {rel_path} --->")
-            parts.append(f"[![{item.get('short', item.get('description', ''))}](/images/{item['id']}.{ext})](#)")
+            parts.append(f"[![{item.get('short', item.get('description', ''))}](/images/{item_id}.{ext})](#)")
             parts.append(f"<!--- section image STOP from {rel_path} --->\n")
             break
 
-    header_file = Path(__file__).parent / 'include' / 'markdown' / f"{item['id']}-header.md"
+    header_file = Path(__file__).parent / 'include' / 'markdown' / f"{item_id}-header.md"
     if header_file.is_file():
-        rel_path = f"tools/include/markdown/{item['id']}-header.md"
+        rel_path = f"tools/include/markdown/{item_id}-header.md"
         parts.append(f"\n<!--- header START from {rel_path} --->")
         parts.append(header_file.read_text())
         parts.append(f"<!--- header STOP from {rel_path} --->\n")
+        parts.append(
+            f'\n[✏️ Edit header](https://github.com/armbian/configng/blob/main/tools/include/markdown/{item_id}-header.md)\n'
+        )
 
     return parts
 
@@ -139,6 +143,9 @@ def create_markdown_user(item, level=1, show_meta=True, force_title=False, skip_
             md.append(f"\n<!--- footer START from {rel_path} --->")
             md.append(footer_file.read_text())
             md.append(f"<!--- footer STOP from {rel_path} --->\n")
+            md.append(
+                f'\n[✏️ Edit footer](https://github.com/armbian/configng/blob/main/tools/include/markdown/{item["id"]}-footer.md)\n'
+            )
 
     if 'sub' in item:
         grouped_subs = {}
